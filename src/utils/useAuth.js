@@ -8,7 +8,7 @@ const useAuth = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      navigate("/forbidden", { repalce: true });
+      navigate("/login", { repalce: true });
     }
   }, [isLoggedIn, navigate]);
   return isLoggedIn;

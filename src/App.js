@@ -10,7 +10,6 @@ const App = () => {
       {isLoggedIn && <NavBar />}
       <Routes>
         <Route path="/"></Route>
-        <Route path="/403">{/* {Forbidden Page} */}</Route>
         <Route path="*">{/* {Not Found Page} */}</Route>
       </Routes>
     </>
