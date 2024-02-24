@@ -1,14 +1,19 @@
-import logo from "./logo.svg";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import LoginPage from "./Components/LoginPage";
+import NavBar from "./components/NavBar";
+import useAuth from "./utils/useAuth";
 
-function App() {
+const App = () => {
+  const isLoggedIn = useAuth();
   return (
-    <div className="app-container">
-      <LoginPage />
-    </div>
+    <>
+      {isLoggedIn && <NavBar />}
+      <Routes>
+        <Route path="/"></Route>
+        <Route path="*">{/* {Not Found Page} */}</Route>
+      </Routes>
+    </>
   );
-}
+};
 
 export default App;
