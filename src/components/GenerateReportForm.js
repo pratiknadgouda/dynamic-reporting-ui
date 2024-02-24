@@ -3,8 +3,22 @@ import { Form, Container, Button, Row, Col, Table } from "react-bootstrap";
 import { Formik } from "formik";
 import axios from "axios";
 import ReportCard from "./ReportCard";
+import userStore from "../store/userStore";
 
 const GenerateReportForm = () => {
+  const [baseReportData, setBaseReportData] = React.useState();
+  const token = userStore((state) => state.token);
+  axios
+    .get("http://localhost:6060/reports/v1/userDetails/reportData", {
+      headers: { Authorization: token },
+    })
+    .then((response) => {
+      const baseData = JSON.parse(response.data.data.jsonReport);
+      setBaseReportData(baseData);
+    });
+
+  const [dataClone, setDataClone] = React.useState(baseReportData);
+
   const validateValues = (values) => {
     const errors = {};
     if (!values.patientId) {
@@ -29,77 +43,25 @@ const GenerateReportForm = () => {
   };
 
   const handleFormSubmit = (values, { setSubmitting }) => {
+    const templateId = 1;
     setSubmitting(true);
-    // TODO API CALLS
-    // axios
-    //   .post("http://localhost:6060/reports/v1/login", { email })
-    //   .then((response) => {
-    //     setResponseMessage("Login successful!");
-    //     const token = response.data.token;
-    //     const user = jwtDecode(token);
-    //     login(user.sub, user.email, user.role, token);
-    //   })
-    //   .catch((error) => {
-    //     setResponseMessage("Login failed. Please try again.");
-    //     console.error("Login failed:", error);
-    //   });
-    console.log("submitted!");
+    axios
+      .post(
+        `http://localhost:6060/reports/v1/generate-document?${templateId}`,
+        { dataClone }
+      )
+      .then((response) => {
+        // TODO Download PDF???
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+      });
     setSubmitting(false);
   };
 
-  const reportData = [
-    {
-      test_type: "himoglobin",
-      tests: [
-        {
-          test_name: "Hemoglobin",
-          observed_value: "7",
-          unit: "gm/dL",
-          reference_range: "14.0-18.0",
-        },
-        {
-          test_name: "Hematocrit",
-          observed_value: "21.1",
-          unit: "%",
-          reference_range: "42.0-52.0",
-        },
-        {
-          test_name: "HemoglobinA1c",
-          observed_value: "4.8",
-          unit: "%",
-          reference_range: "4.3-6.1",
-        },
-      ],
-    },
-    {
-      test_type: "setin",
-      tests: [
-        {
-          test_name: "Vitamin B12",
-          observed_value: "250",
-          unit: "pg/ml",
-          reference_range: "210-1100",
-        },
-        {
-          test_name: "Folate",
-          observed_value: "3.2",
-          unit: "ng/ml",
-          reference_range: "1.0-2.2",
-        },
-      ],
-    },
-    {
-      test_type: "setin",
-      tests: [
-        {
-          test_name: "HIV-1 RNA Quant",
-          observed_value: "Lessthan 75",
-          unit: "Copies/ml|Lessthan 75",
-          reference_range: "",
-        },
-      ],
-    },
-  ];
+  const handleReset = () => {
+    setDataClone(baseReportData);
+  };
 
   return (
     <div className="mt-4 h-100 d-flex justify-content-center align-items-center">
@@ -107,13 +69,13 @@ const GenerateReportForm = () => {
         <h1 className="mb-4">Generate Report</h1>
         <Formik
           initialValues={{
-            patientId: "",
-            name: "",
-            age: "",
-            gender: "",
-            dob: "",
-            medications: "",
-            orderingDoctor: "",
+            patientId: baseReportData.patientInfo.patient_id,
+            name: baseReportData.patientInfo.name,
+            age: baseReportData.patientInfo.age,
+            gender: baseReportData.patientInfo.age,
+            dob: baseReportData.patientInfo.dob,
+            medications: baseReportData.patientInfo.medications,
+            orderingDoctor: baseReportData.patientInfo.ordering_dr,
           }}
           onSubmit={handleFormSubmit}
           validate={validateValues}
@@ -127,11 +89,11 @@ const GenerateReportForm = () => {
                       <Form.Label>Patient ID</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter patient ID"
                         name="patientId"
                         value={values.patientId}
                         onChange={handleChange}
                         isInvalid={!!errors.patientId}
+                        disabled
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.patientId}
@@ -143,11 +105,11 @@ const GenerateReportForm = () => {
                       <Form.Label>Name</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter patient name"
                         name="name"
                         value={values.name}
                         onChange={handleChange}
                         isInvalid={!!errors.name}
+                        disabled
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.name}
@@ -159,11 +121,11 @@ const GenerateReportForm = () => {
                       <Form.Label>Age</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter patient age"
                         name="age"
                         value={values.age}
                         onChange={handleChange}
                         isInvalid={!!errors.age}
+                        disabled
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.age}
@@ -180,8 +142,8 @@ const GenerateReportForm = () => {
                         value={values.gender}
                         onChange={handleChange}
                         isInvalid={!!errors.gender}
+                        disabled
                       >
-                        <option value="">Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
@@ -196,11 +158,11 @@ const GenerateReportForm = () => {
                       <Form.Label>Date of Birth</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter patient DOB"
                         name="dob"
                         value={values.dob}
                         onChange={handleChange}
                         isInvalid={!!errors.dob}
+                        disabled
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.dob}
@@ -212,11 +174,11 @@ const GenerateReportForm = () => {
                       <Form.Label>Ordering Doctor</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter doctor name"
                         name="orderingDoctor"
                         value={values.orderingDoctor}
                         onChange={handleChange}
                         isInvalid={!!errors.orderingDoctor}
+                        disabled
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.orderingDoctor}
@@ -229,18 +191,21 @@ const GenerateReportForm = () => {
                   <Form.Control
                     as="textarea"
                     rows={4}
-                    placeholder="Enter prescribed medications"
                     name="medications"
                     value={values.medications}
                     onChange={handleChange}
+                    disabled
                   />
                 </Form.Group>
               </div>
               <div className="dataCards mt-4">
-                <ReportCard data={reportData} />
+                <ReportCard data={dataClone} setData={setDataClone} />
               </div>
 
               <div className="text-end">
+                <Button className="mt-4 me-2" onClick={handleReset}>
+                  Reset Report
+                </Button>
                 <Button className="mt-4" type="submit">
                   Generate Report
                 </Button>
