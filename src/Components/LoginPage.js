@@ -38,7 +38,7 @@ function LoginPage() {
         <div className="mt-5 h-100 d-flex justify-content-center align-items-center">
           <Form className="p-3 w-25 bg-light rounded" onSubmit={handleSubmit}>
             <Form.Group className="mb-3 p-2" controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label><h4>Email</h4></Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
@@ -51,7 +51,7 @@ function LoginPage() {
             </Form.Group>
 
             <Button variant="primary" type="submit">
-              Submit
+              Login
             </Button>
             {responseMessage && <p>{responseMessage}</p>}
           </Form>
