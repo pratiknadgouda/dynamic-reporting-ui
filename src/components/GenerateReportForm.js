@@ -4,13 +4,16 @@ import { Formik } from "formik";
 import axios from "axios";
 import ReportCard from "./ReportCard";
 import userStore from "../store/userStore";
+import { useParams } from "react-router-dom";
 
 const GenerateReportForm = () => {
+  const params = useParams()
+  const {id:id}=params;
   const [baseReportData, setBaseReportData] = React.useState();
   const token = userStore((state) => state.token);
   if(!baseReportData){
   axios
-    .get("http://localhost:6060/reports/v1/userDetails/reportData/", {
+    .get(`http://localhost:6060/reports/v1/userDetails/reportData/?id=${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
@@ -51,7 +54,7 @@ const GenerateReportForm = () => {
     console.log(dataClone);
     axios
       .post(
-        `http://localhost:6060/reports/v1/generate-document?templateId=${templateId}`,
+        `http://localhost:6060/reports/v1/generate-document?templateId=${templateId}&id=${id}`,
         {patient_info: baseReportData?.patient_info, test_types: dataClone},{ responseType: 'blob', headers: { Authorization: `Bearer ${token}` }}
       )
       .then((response) => {

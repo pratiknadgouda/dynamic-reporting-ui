@@ -17,7 +17,7 @@ const App = () => {
         <Route path="*">{/* {Not Found Page} */}</Route>
         <Route path="/doctor" element={<DoctorsView />} />
         <Route path="/patient" element={<PatientsView />} />
-        <Route path="/generate-report" element={<GenerateReportForm />} />
+        <Route path="/generate-report/:id?" element={<GenerateReportForm />} />
       </Routes>
     </>
   );

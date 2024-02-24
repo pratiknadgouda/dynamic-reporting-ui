@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import axios from "axios";
 
 const TemplateWindow = (props) => {
-    
+const {id}= props    
     const [templates, setTemplates] = React.useState([{
             id: "0",
             templateName: "Please Select Template"
@@ -42,7 +42,7 @@ const TemplateWindow = (props) => {
         const token = sessionStorage.getItem("token");
         try {
           const res = await  axios.post(
-            `http://localhost:6060/reports/v1/generate-document?templateId=${selectedTemplate}`,undefined,
+            `http://localhost:6060/reports/v1/generate-document?templateId=${selectedTemplate}&id=${id}`,undefined,
             { headers: { Authorization: `Bearer ` + token ,
             "Content-Type": 'application/json' },
             responseType:"blob"},

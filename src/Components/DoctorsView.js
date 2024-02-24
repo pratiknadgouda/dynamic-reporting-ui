@@ -26,6 +26,8 @@ const DoctorsView = () => {
   }, []);
 
   const [modalShow, setModalShow] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState();
+  
   return (
     <div className="px-5 py-5">
       <h3 className="d-flex align-left">{"Patients List"}</h3>
@@ -50,14 +52,14 @@ const DoctorsView = () => {
                       <Button
                         variant="primary"
                         size="sm"
-                        onClick={() => navigate("/generate-report")}
+                        onClick={() => navigate(`/generate-report/${item.id}`)}
                       >
                         Update Report
                       </Button>{" "}
                       <Button
                         variant="secondary"
                         size="sm"
-                        onClick={() => setModalShow(true)}
+                        onClick={()=>{setModalShow(true);setSelectedId(item.id)}}
                       >
                         View Report
                       </Button>{" "}
@@ -69,7 +71,7 @@ const DoctorsView = () => {
           })}
         </tbody>
       </Table>
-      <TemplateWindow show={modalShow} onHide={() => setModalShow(false)} />
+      <TemplateWindow show={modalShow} onHide={() => setModalShow(false)}  id={selectedId}/>
     </div>
   );
 };
