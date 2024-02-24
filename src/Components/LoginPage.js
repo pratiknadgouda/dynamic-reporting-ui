@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
+import userStore from "../store/userStore";
+import { jwtDecode } from "jwt-decode";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
+  const { login } = userStore((state) => state.login);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +16,9 @@ function LoginPage() {
       .post("http://localhost:6060/reports/v1/login", { email })
       .then((response) => {
         setResponseMessage("Login successful!");
+        const token = response.data.token;
+        const user = jwtDecode(token);
+        login(user.sub, user.email, user.role, token);
       })
       .catch((error) => {
         setResponseMessage("Login failed. Please try again.");

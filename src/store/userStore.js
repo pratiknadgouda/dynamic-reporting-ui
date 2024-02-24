@@ -8,12 +8,19 @@ const userStore = create(
       token: sessionStorage.getItem("token"),
       user: "",
       email: "",
-      login: (user, email, token) => {
-        set({ loggedIn: true, token, user, email });
+      role: "",
+      login: (user, email, role, token) => {
+        set({ loggedIn: true, token, user, email, role });
         sessionStorage.setItem("token", token);
       },
       logout: () => {
-        set({ loggedIn: false, token: null, user: null, email: null });
+        set({
+          loggedIn: false,
+          token: null,
+          user: null,
+          email: null,
+          role: null,
+        });
         sessionStorage.setItem("token", null);
       },
     }),
