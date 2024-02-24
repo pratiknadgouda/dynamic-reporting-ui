@@ -11,7 +11,7 @@ const App = () => {
   const isLoggedIn = useAuth();
   return (
     <>
-      {!isLoggedIn && <NavBar />}
+      {isLoggedIn && <NavBar />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="*">{/* {Not Found Page} */}</Route>

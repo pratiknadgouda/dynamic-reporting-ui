@@ -7,7 +7,7 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loggedIn) {
+    if (!loggedIn) {
       navigate("/login", { repalce: true });
     } else if (loggedIn) {
       if (role === "DOCTOR") {
