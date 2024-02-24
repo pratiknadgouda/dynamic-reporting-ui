@@ -1,17 +1,19 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
+import useAuth from "./utils/useAuth";
 
 const App = () => {
+  const isLoggedIn = useAuth();
   return (
-    <BrowserRouter>
-      <NavBar />
+    <>
+      {isLoggedIn && <NavBar />}
       <Routes>
         <Route path="/"></Route>
         <Route path="/403">{/* {Forbidden Page} */}</Route>
         <Route path="*">{/* {Not Found Page} */}</Route>
       </Routes>
-    </BrowserRouter>
+    </>
   );
 };
 
