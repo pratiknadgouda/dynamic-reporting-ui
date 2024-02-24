@@ -8,16 +8,19 @@ import userStore from "../store/userStore";
 const GenerateReportForm = () => {
   const [baseReportData, setBaseReportData] = React.useState();
   const token = userStore((state) => state.token);
+  if(!baseReportData){
   axios
-    .get("http://localhost:6060/reports/v1/userDetails/reportData", {
-      headers: { Authorization: token },
+    .get("http://localhost:6060/reports/v1/userDetails/reportData/", {
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => {
       const baseData = JSON.parse(response.data.data.jsonReport);
+      console.log(baseData)
       setBaseReportData(baseData);
     });
+  }
 
-  const [dataClone, setDataClone] = React.useState(baseReportData);
+  const [dataClone, setDataClone] = React.useState();
 
   const validateValues = (values) => {
     const errors = {};
@@ -42,26 +45,38 @@ const GenerateReportForm = () => {
     return errors;
   };
 
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = (event) => {
     const templateId = 1;
-    setSubmitting(true);
+    event.preventDefault();
+    console.log(dataClone);
     axios
       .post(
-        `http://localhost:6060/reports/v1/generate-document?${templateId}`,
-        { dataClone }
+        `http://localhost:6060/reports/v1/generate-document?templateId=${templateId}`,
+        {patient_info: baseReportData?.patient_info, test_types: dataClone},{ responseType: 'blob', headers: { Authorization: `Bearer ${token}` }}
       )
       .then((response) => {
-        // TODO Download PDF???
+        const blob = new Blob([response.data], {type: response.headers['Content-Type']});
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download='resportsBasic.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       })
       .catch((error) => {
         console.error("Login failed:", error);
       });
-    setSubmitting(false);
+    // setSubmitting(false);
   };
 
   const handleReset = () => {
-    setDataClone(baseReportData);
+    setDataClone(baseReportData?.test_types);
   };
+  React.useEffect(()=>{
+    if(baseReportData?.test_types.length > 0){
+      setDataClone(baseReportData?.test_types);
+    }
+  }, [baseReportData?.test_types])
 
   return (
     <div className="mt-4 h-100 d-flex justify-content-center align-items-center">
@@ -69,13 +84,13 @@ const GenerateReportForm = () => {
         <h1 className="mb-4">Generate Report</h1>
         <Formik
           initialValues={{
-            patientId: baseReportData.patientInfo.patient_id,
-            name: baseReportData.patientInfo.name,
-            age: baseReportData.patientInfo.age,
-            gender: baseReportData.patientInfo.age,
-            dob: baseReportData.patientInfo.dob,
-            medications: baseReportData.patientInfo.medications,
-            orderingDoctor: baseReportData.patientInfo.ordering_dr,
+            patientId: baseReportData?.patient_info?.patient_id,
+            name: baseReportData?.patient_info?.name,
+            age: baseReportData?.patient_info?.age_sex,
+            gender: baseReportData?.patient_info?.age_sex,
+            dob: baseReportData?.patient_info?.dob,
+            medications: baseReportData?.patient_info?.medications,
+            orderingDoctor: baseReportData?.patient_info?.ordering_dr,
           }}
           onSubmit={handleFormSubmit}
           validate={validateValues}
@@ -90,6 +105,7 @@ const GenerateReportForm = () => {
                       <Form.Control
                         type="text"
                         name="patientId"
+                        placeholder={baseReportData?.patient_info?.patient_id}
                         value={values.patientId}
                         onChange={handleChange}
                         isInvalid={!!errors.patientId}
@@ -106,6 +122,7 @@ const GenerateReportForm = () => {
                       <Form.Control
                         type="text"
                         name="name"
+                        placeholder={baseReportData?.patient_info?.name}
                         value={values.name}
                         onChange={handleChange}
                         isInvalid={!!errors.name}
@@ -122,6 +139,7 @@ const GenerateReportForm = () => {
                       <Form.Control
                         type="text"
                         name="age"
+                        placeholder={baseReportData?.patient_info?.age_sex}
                         value={values.age}
                         onChange={handleChange}
                         isInvalid={!!errors.age}
@@ -159,6 +177,7 @@ const GenerateReportForm = () => {
                       <Form.Control
                         type="text"
                         name="dob"
+                        placeholder={baseReportData?.patient_info?.dob}
                         value={values.dob}
                         onChange={handleChange}
                         isInvalid={!!errors.dob}
@@ -175,6 +194,7 @@ const GenerateReportForm = () => {
                       <Form.Control
                         type="text"
                         name="orderingDoctor"
+                        placeholder={baseReportData?.patient_info?.ordering_dr}
                         value={values.orderingDoctor}
                         onChange={handleChange}
                         isInvalid={!!errors.orderingDoctor}
@@ -192,6 +212,7 @@ const GenerateReportForm = () => {
                     as="textarea"
                     rows={4}
                     name="medications"
+                    placeholder={baseReportData?.patient_info?.medications}
                     value={values.medications}
                     onChange={handleChange}
                     disabled
@@ -206,7 +227,7 @@ const GenerateReportForm = () => {
                 <Button className="mt-4 me-2" onClick={handleReset}>
                   Reset Report
                 </Button>
-                <Button className="mt-4" type="submit">
+                <Button className="mt-4" type="submit" onClick={handleFormSubmit}>
                   Generate Report
                 </Button>
               </div>

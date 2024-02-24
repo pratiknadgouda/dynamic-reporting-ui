@@ -20,7 +20,7 @@ function LoginPage() {
       .post("http://localhost:6060/reports/v1/login", { email })
       .then((response) => {
         setResponseMessage("Login successful!");
-        const token = response.data.token;
+        const token = response.data.data.access_token;
         const user = jwtDecode(token);
         login(user.sub, user.email, user.role, token);
       })

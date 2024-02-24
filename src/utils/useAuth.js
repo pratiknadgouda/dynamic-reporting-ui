@@ -9,13 +9,14 @@ const useAuth = () => {
   useEffect(() => {
     if (!loggedIn) {
       navigate("/login", { repalce: true });
-    } else if (loggedIn) {
-      if (role === "DOCTOR") {
-        navigate("/doctor");
-      } else if (role === "PATIENT") {
-        navigate("/patient");
-      }
     }
+    // } else if (loggedIn) {
+    //   if (role === "DOCTOR") {
+    //     navigate("/doctor");
+    //   } else if (role === "PATIENT") {
+    //     navigate("/generate-report");
+    //   }
+    // }
   }, [loggedIn, navigate]);
   return loggedIn;
 };
