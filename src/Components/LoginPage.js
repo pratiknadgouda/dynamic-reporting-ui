@@ -11,7 +11,7 @@ function LoginPage() {
   useAuth();
   const [email, setEmail] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
-  const { login, loggedIn } = userStore((state) => state.login);
+  const { login, loggedIn } = userStore((state) => state);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
