@@ -3,14 +3,15 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import TemplateWindow from "./TemplateModal";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DoctorsView = () => {
-
   const [patientsData, setPatientsData] = React.useState([]);
-  const fetchPatients =async () => {
+  const navigate = useNavigate();
+  const fetchPatients = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      const { data } = await  axios.get(
+      const { data } = await axios.get(
         "http://localhost:6060/reports/v1/userDetails/",
         { headers: { Authorization: `Bearer ` + token } }
       );
@@ -46,7 +47,11 @@ const DoctorsView = () => {
                 <td className="d-flex justify-content-around ">
                   {
                     <>
-                      <Button variant="primary" size="sm">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => navigate("/generate-report")}
+                      >
                         Update Report
                       </Button>{" "}
                       <Button

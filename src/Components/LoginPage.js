@@ -23,6 +23,7 @@ function LoginPage() {
         const token = response.data.data.access_token;
         const user = jwtDecode(token);
         login(user.sub, user.email, user.role, token);
+        navigate(`/${user.role.toLowerCase()}`);
       })
       .catch((error) => {
         setResponseMessage("Login failed. Please try again.");
@@ -38,7 +39,9 @@ function LoginPage() {
         <div className="mt-5 h-100 d-flex justify-content-center align-items-center">
           <Form className="p-3 w-25 bg-light rounded" onSubmit={handleSubmit}>
             <Form.Group className="mb-3 p-2" controlId="formBasicEmail">
-              <Form.Label><h4>Email</h4></Form.Label>
+              <Form.Label>
+                <h4>Email</h4>
+              </Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
