@@ -15,7 +15,7 @@ const NavBar = () => {
   };
 
   return (
-    <Navbar bg="light" variant="light">
+    <Navbar expand="lg" bg="dark" data-bs-theme="dark">
       <Container>
         <Navbar.Brand as={Link} to="/">
           Brand
@@ -34,8 +34,6 @@ const NavBar = () => {
             }
             id="user-image"
           >
-            <NavDropdown.Item>View Profile</NavDropdown.Item>
-            <NavDropdown.Divider />
             <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
           </NavDropdown>
         </Navbar.Collapse>

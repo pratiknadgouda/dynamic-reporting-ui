@@ -5,6 +5,7 @@ import useAuth from "./utils/useAuth";
 import LoginPage from "./components/LoginPage";
 import DoctorsView from "./components/DoctorsView";
 import PatientsView from "./components/PatientsView";
+import GenerateReportForm from "./components/GenerateReportForm";
 
 const App = () => {
   const isLoggedIn = useAuth();
@@ -12,11 +13,11 @@ const App = () => {
     <>
       {isLoggedIn && <NavBar />}
       <Routes>
-        <Route path="/"></Route>
-        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/login" element={<LoginPage />} />
         <Route path="*">{/* {Not Found Page} */}</Route>
-        <Route path="/doctor" element={<DoctorsView />}></Route>
-        <Route path="/patient" element={<PatientsView />}></Route>
+        <Route path="/doctor" element={<DoctorsView />} />
+        <Route path="/patient" element={<PatientsView />} />
+        <Route path="/generate-report" element={<GenerateReportForm />} />
       </Routes>
     </>
   );

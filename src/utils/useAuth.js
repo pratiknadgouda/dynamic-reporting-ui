@@ -3,15 +3,21 @@ import { useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
 
 const useAuth = () => {
-  const isLoggedIn = userStore((state) => state.loggedIn);
+  const { loggedIn, role } = userStore((state) => state);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!loggedIn) {
       navigate("/login", { repalce: true });
+    } else if (loggedIn) {
+      if (role === "DOCTOR") {
+        navigate("/doctor");
+      } else if (role === "PATIENT") {
+        navigate("/patient");
+      }
     }
-  }, [isLoggedIn, navigate]);
-  return isLoggedIn;
+  }, [loggedIn, navigate]);
+  return loggedIn;
 };
 
 export default useAuth;
